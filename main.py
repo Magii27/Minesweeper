@@ -8,6 +8,7 @@ import random
 colors = {0:"",1:"blue", 2:"green", 3:"red", 4:"brown", 5:"yellow"}
 labels_array = []
 buttons_array = []
+excluded = []
 count = 0
 
 
@@ -15,35 +16,34 @@ def decision(probability):
     return random.random() < probability
 
 
-def set_bombs():
-    global labels_array
-    #print(labels_array)
+def set_bombs(sender):
+    global labels_array, buttons_array, excluded
+
     for i_y in range(len(labels_array)):
         for i_x in range(len(labels_array[0])):
-            if decision(0.2) is True:
-                labels_array[i_y][i_x].setText("B")
-                labels_array[i_y][i_x].setStyleSheet("background-color: black")
-                set_numbers(i_y, i_x)
+            if buttons_array[i_y][i_x] == sender:
+                set_excluded(i_y, i_x)
 
-
-#def set_numbers():
-#    global labels_array
-#    #print("ich bin in set_numbers()")
-#    for i_y in range(len(labels_array)):
-#        for i_x in range(len(labels_array[0])):
-#            #print("Text: ", labels_array[i_y][i_x].text())
-#            if labels_array[i_y][i_x].text() == "B":
-#                set_numbers2(i_y, i_x)
+            if str(str(i_y) + str(i_x)) not in excluded:
+                if decision(0.2) is True:
+                    labels_array[i_y][i_x].setText("B")
+                    labels_array[i_y][i_x].setStyleSheet("background-color: black")
+                    set_numbers(i_y, i_x)
+            else:
+                print(f"{str(str(i_y) + str(i_x))}: \t", excluded)
 
 
 def counter(y, x):
-    global labels_array
-    text = labels_array[y][x].text()
+    global labels_array, colors
+
+    label = labels_array[y][x]
+    text = label.text()
     if text != "B":
         if text == "":
             text = 0
-        labels_array[y][x].setText(str(int(text) + 1))
-        #print(f"pos {y}/{x}: \t{str(int(text) + 1)}")
+        num = int(text) + 1
+        label.setText(str(num))
+        label.setStyleSheet(f"color: {colors[num]}")
 
 
 def set_numbers(y, x):
@@ -103,19 +103,38 @@ def set_numbers(y, x):
            counter(y - 1, x)
 
 
+def set_excluded2(y, x):
+    global labels_array, excluded
+
+    label = labels_array[y][x]
+    label.setStyleSheet("background: none")
+    label.setText("")
+    excluded.append(str(y) + str(x))
+
+
+def set_excluded(y, x):
+    set_excluded2(y + 1, x)
+    set_excluded2(y, x)
+    set_excluded2(y - 1, x)
+    set_excluded2(y + 1, x + 1)
+    set_excluded2(y, x + 1)
+    set_excluded2(y - 1, x + 1)
+    set_excluded2(y + 1, x - 1)
+    set_excluded2(y, x - 1)
+    set_excluded2(y - 1, x - 1)
+
 
 def btn_hide(button):
-    global count, labels_array
+    global count, labels_array, buttons_array
     if count == 0:
-        set_bombs()
         send = button.sender()
+        set_bombs(send)
         send.hide()
         count += 1
-        #print("hier")
     else:
         send = button.sender()
         send.hide()
-    #print("pressed")
+        print("pressed")
 
 
 def window():
@@ -131,11 +150,6 @@ def window():
         labels_row = []
         buttons_row = []
         for j in range(0, play_width):
-            #if i == 0:
-            #    label = QLabel("")
-            #else:
-            #    label = QLabel(str(i))
-            #num = random.choice([0,1,2,3,4,5])
             label = QLabel("")
             labels_row.append(label)
             #label.setStyleSheet(f"background-color: lightgray; color: {colors[num]}; text-align: right")
@@ -173,7 +187,4 @@ def window():
     sys.exit(app.exec_())
 
 
-
 window()
-#if __name__ == '__main__':
-#    window()
