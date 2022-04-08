@@ -1,13 +1,11 @@
-width = 16
-height = 26
-grid = []
-for i in range(0, 416):
-    grid.append(0)
+#click
+#freespace
+#bombs generated + numbers +=
+#set all fields without any bomb and number free
+#start clicking
+#clicked -> on number, free space, bomb
+#   number:         print number
+#   free space:     reveal evertyhing next to space
+#   bomb:           you lost -> lose screen / restart
 
-for i in range(0, 416, 16):
-    print(grid[i//width:i%width*])
-
-for i in range(0, 416):
-    y = i//width
-    x = i%width
-    #print(y, x)
+#
