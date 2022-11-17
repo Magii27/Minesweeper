@@ -9,7 +9,7 @@ colors = {0:"",1:"blue", 2:"green", 3:"red", 4:"brown", 5:"yellow"}
 labels_array = []
 buttons_array = []
 excluded = []
-count = 0
+count = 1
 
 
 def decision(probability):
